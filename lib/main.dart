@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:reservation/services/auth.dart';
 import 'NextPage.dart';
+import 'package:reservation/Models/Userr.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth package
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized before Firebase
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(const MyApp());
 }
 
@@ -12,7 +18,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return StreamProvider<Userr?>.value(
+      value: AuthService().user,
+      initialData: null,
+      child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -34,12 +43,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
-    );
+      home: const HomePage(),
+    ));
   }
 }
 
 class HomePage extends StatefulWidget{
+  const HomePage({super.key});
+
   @override
   State<StatefulWidget> createState() => HomePageState();
 }
@@ -63,26 +74,33 @@ class HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _NameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _auth = AuthService();
 
-  void _login() {
+  void _login() async {
     String email = _NameController.text;
     String password = _passwordController.text;
 
-    if (email == 'admin' && password == 'password') {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // User successfully logged in, navigate to next page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => NextPage()),
+        MaterialPageRoute(builder: (context) => const NextPage()),
       );
-    } else {
+    } catch (e) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Invalid email or password.'),
+          title: const Text('Error'),
+          content: const Text('Invalid email or password.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         ),
@@ -92,14 +110,26 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<Userr>(context);
+    print(user);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Home", style: TextStyle(color: TextColor)),
         backgroundColor: backgroundColor,
-        leading: Icon(Icons.home),
+        leading: const Icon(Icons.home),
+        actions: <Widget>[
+          ElevatedButton.icon(
+            icon: Icon(Icons.person),
+            label: Text('logout'),
+            onPressed: () async {
+              await _auth.signOut();
+            },
+          )
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -108,22 +138,22 @@ class HomePageState extends State<HomePage> {
               TextFormField(
                 controller: _NameController,
                 keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  labelText: "Name",
+                decoration: const InputDecoration(
+                  labelText: "Email",
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please enter your email';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Password",
                   border: OutlineInputBorder(),
                 ),
@@ -135,10 +165,10 @@ class HomePageState extends State<HomePage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login, // Call the _login function when the login button is pressed
-                child: Text("Login"),
+                child: const Text("Login"),
               ),
             ],
           ),

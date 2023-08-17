@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "845770804063",
+    "project_id": "reservation-app-66fc1",
+    "storage_bucket": "reservation-app-66fc1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845770804063:android:b127d628a8327407e444ea",
+        "android_client_info": {
+          "package_name": "com.medicalapp.reservation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "845770804063-si483om46rnf871qihclsm7qijr4vidb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_LDtPHJPoBvpZx0Y-eRkr73b0zCzwI8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "845770804063-si483om46rnf871qihclsm7qijr4vidb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
