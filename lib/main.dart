@@ -60,6 +60,10 @@ class HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("Completed");
+      setState(() {});
+    });
   }
 
   @override
