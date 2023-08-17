@@ -74,7 +74,7 @@ class HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _NameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _auth = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _login() async {
     String email = _NameController.text;
@@ -122,9 +122,7 @@ class HomePageState extends State<HomePage> {
           ElevatedButton.icon(
             icon: Icon(Icons.person),
             label: Text('logout'),
-            onPressed: () async {
-              await _auth.signOut();
-            },
+            onPressed: () => {},
           )
         ],
       ),
