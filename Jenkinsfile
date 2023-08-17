@@ -12,7 +12,14 @@ pipeline {
 		    flutter doctor -v
 		'''
             }
-        }   
+        }
+	stage('dependencies') {
+            steps {
+                sh '''
+		    flutter pub get
+		'''
+            }
+        }
 	stage('test') {
             steps {
                 sh '''
